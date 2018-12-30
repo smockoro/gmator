@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/smockoro/gmator/execute"
+	"github.com/smockoro/gmator/handle"
 	"github.com/smockoro/gmator/report"
 )
 
@@ -13,7 +13,7 @@ func main() {
 	// 引数に合わせてhanderを構成
 	// - リクエスト先
 	// - 結果の出力形式
-	handler := execute.NewHandler()
+	handler := handle.NewHandler()
 	reporter := report.NewReporter()
 
 	// 実行
