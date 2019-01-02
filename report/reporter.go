@@ -27,22 +27,12 @@ func (r *stdoutReporter) Report(rlt *result.Result) {
 	fmt.Println("stdout report")
 
 	counter := 0
-loop:
-	for {
-		select {
-		case _, ok := <-rlt.ReqChan:
-			fmt.Println(ok)
-			if !ok {
-				close(rlt.RespChan)
-				break loop
-			}
-		default:
-			fmt.Println("Go routine resp")
-			fmt.Println(<-rlt.RespChan)
-			counter++
-			fmt.Printf("====response loop counter :%d\n", counter)
-		}
 
+	for resp := range rlt.RespChan {
+		fmt.Println("Go routine resp")
+		fmt.Printf("====response loop counter :%d\n", counter)
+		fmt.Println(resp)
+		counter++
 	}
 	close(rlt.Done)
 
