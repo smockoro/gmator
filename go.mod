@@ -1,1 +1,1 @@
-module github.com/smockoro/gmater
+module github.com/smockoro/gmator
