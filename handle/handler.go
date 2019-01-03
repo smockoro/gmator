@@ -9,20 +9,69 @@ import (
 	"github.com/smockoro/gmator/result"
 )
 
+const (
+	DefaultTimes    int           = 1
+	DefaultConc     int           = 1
+	DefaultInterval time.Duration = 1 * time.Second
+	DefaultURL      string        = "http://localhost"
+)
+
 type Handler interface {
-	Build() error
 	Do(*result.Result)
 }
 
-func NewHandler() Handler {
-	return &handler{}
+type handler struct {
+	Times       int
+	Concurrents int
+	Interval    time.Duration
+	URL         string
 }
 
-type handler struct{}
+type HanlderOptionFunc func(*handler) error
 
-func (h *handler) Build() error {
-	fmt.Println("Http Handler Build")
-	return nil
+func NewHandler(options ...HanlderOptionFunc) (Handler, error) {
+	h := &handler{
+		Times:       DefaultTimes,
+		Concurrents: DefaultConc,
+		Interval:    DefaultInterval,
+		URL:         DefaultURL,
+	}
+
+	for _, option := range options {
+		if err := option(h); err != nil {
+			return nil, err
+		}
+	}
+
+	return h, nil
+}
+
+func SetTimes(times int) HanlderOptionFunc {
+	return func(h *handler) error {
+		h.Times = times
+		return nil
+	}
+}
+
+func SetConcurrents(concurrents int) HanlderOptionFunc {
+	return func(h *handler) error {
+		h.Concurrents = concurrents
+		return nil
+	}
+}
+
+func SetInterval(interval time.Duration) HanlderOptionFunc {
+	return func(h *handler) error {
+		h.Interval = interval
+		return nil
+	}
+}
+
+func SetURL(url string) HanlderOptionFunc {
+	return func(h *handler) error {
+		h.URL = url
+		return nil
+	}
 }
 
 func (h *handler) Do(rlt *result.Result) {

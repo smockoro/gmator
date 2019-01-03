@@ -3,17 +3,16 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"time"
 
-	"github.com/smockoro/gmator/handle"
-	"github.com/smockoro/gmator/report"
-	"github.com/smockoro/gmator/result"
+	hdl "github.com/smockoro/gmator/handle"
+	rpt "github.com/smockoro/gmator/report"
+	rlt "github.com/smockoro/gmator/result"
 )
 
 func main() {
 	// 引数を処理する
-	// TODO:引数を処理できるようにする
-	// 　引数として考えるもの
 	//   - 実行方式
 	//    - 回数
 	//    - 並行数
@@ -47,10 +46,24 @@ func main() {
 	// - 結果の出力形式
 	// - チャネルでデータ共有
 	// TODO:引数に合わせてビルドする処理を作成する
-	result := result.NewResult()
+	result := rlt.NewResult()
 
-	handler := handle.NewHandler()
-	reporter := report.NewStdoutReporter()
+	handler, err := hdl.NewHandler(
+		hdl.SetTimes(times),
+		hdl.SetConcurrents(concurrents),
+		hdl.SetInterval(interval),
+		hdl.SetURL(url),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	reporter, err := rpt.NewStdoutReporter(
+		rpt.SetFormat(format),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// 実行開始
 	// goroutineとして実行結果をキューに入れる
